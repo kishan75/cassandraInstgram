@@ -15,3 +15,14 @@ CREATE TABLE instagramdemo.user (
     registrationdate date,
     username text
 );
+
+
+CREATE TABLE comment(
+commentid timeuuid PRIMARY KEY,	
+postid timeuuid,
+userid timeuuid,
+time timestamp,
+comment text,
+replies list<timeuuid>,
+like set<timeuuid>
+);
