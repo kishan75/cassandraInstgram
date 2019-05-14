@@ -26,3 +26,13 @@ comment text,
 replies list<timeuuid>,
 like set<timeuuid>
 );
+
+CREATE TABLE instagramdemo.post (
+    postid timeuuid PRIMARY KEY,
+    caption text,
+    comments list<text>,
+    imagepath text,
+    like set<text>,
+    time timestamp,
+    userid text
+)
