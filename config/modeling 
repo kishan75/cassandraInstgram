@@ -1,0 +1,17 @@
+CREATE TABLE instagramdemo.user (
+    userid timeuuid PRIMARY KEY,
+    dob date,
+    email text,
+    firstname text,
+    followers set<timeuuid>,
+    following set<timeuuid>,
+    lastname text,
+    messages map<timeuuid, frozen<list<timeuuid>>>,
+    myactivity set<timeuuid>,
+    notifications set<timeuuid>,
+    phone text,
+    post set<timeuuid>,
+    postnotification map<timeuuid, date>,
+    registrationdate date,
+    username text
+);

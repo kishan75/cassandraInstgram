@@ -6,7 +6,7 @@ var storage = multer.diskStorage({
     cb(null, "./public/images");
   },
   filename: function (req, file, cb) {
-    cb(null, new Date() + file.originalname);
+    cb(null, new Date().toDateString() + file.originalname);
   }
 });
 var upload = multer({
@@ -21,8 +21,11 @@ var upload = multer({
 
 var controller = require("../controller/index");
 
-router.post('/', upload.single("image"), function (req, res) {
+router.post("/", upload.single("imagepath"), function (req, res) {
   controller.post.createPost(req, res);
+});
+router.get('/', function (req, res) {
+  res.render("index.ejs", {});
 });
 
 module.exports = router;
