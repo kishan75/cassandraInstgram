@@ -1,5 +1,7 @@
+
 CREATE TABLE instagramdemo.user (
     userid timeuuid PRIMARY KEY,
+    atdeleted timestamp,
     dob date,
     email text,
     firstname text,
@@ -14,7 +16,7 @@ CREATE TABLE instagramdemo.user (
     postnotification map<timeuuid, date>,
     registrationdate date,
     username text
-);
+)
 
 
 CREATE TABLE comment(
@@ -23,16 +25,40 @@ postid timeuuid,
 userid timeuuid,
 time timestamp,
 comment text,
-replies list<timeuuid>,
+replies set<timeuuid>,
 like set<timeuuid>
 );
 
 CREATE TABLE instagramdemo.post (
     postid timeuuid PRIMARY KEY,
     caption text,
-    comments list<text>,
+    comments set<timeuuid>,
     imagepath text,
-    like set<text>,
+    like set<timeuuid>,
     time timestamp,
-    userid text
-)
+    userid timeuuid
+);
+
+
+CREATE TABLE IF NOT EXISTS myactivity(
+activityid timeuuid PRIMARY KEY,
+byuser timeuuid,
+ofuser timeuuid,
+activitytype int,
+activityobjectid timeuuid,
+time timestamp
+);
+
+CREATE TABLE IF NOT EXISTS notificationtype(
+message text PRIMARY KEY,
+id int
+);
+
+CREATE TABLE IF NOT EXISTS notification(
+notificationid timeuuid PRIMARY KEY,
+fromuser timeuuid,
+touser timeuuid,
+type int,
+notificationobjectid timeuuid,
+time timestamp
+);
