@@ -24,6 +24,11 @@ var controller = require("../controller/index");
 router.post("/", upload.single("imagepath"), function (req, res) {
   controller.post.createPost(req, res);
 });
+
+router.post("/like",function (req, res) {
+  controller.post.likePost(req, res);
+});
+
 router.get('/', function (req, res) {
   res.render("index.ejs", {});
 });
