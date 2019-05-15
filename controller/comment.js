@@ -47,7 +47,14 @@ collection.createComment = function (req, res) {
 };
 
 collection.getAllCommentByPostId = function (req, res) {
-    
+    const query1 = "SELECT comments FROM post WHERE postid=?";
+    var result = client.execute(query1, [req.params.postId], { prepare: true });
+
+    result.then(result => {
+        const query2 = "SELECT * FROM comment WHERE commentid IN ?";
+        result = client.execute(query2, [result.rows[0].comments], { prepare: true });
+        result.then(result => res.send(result.rows), err => console.log(err));
+    }, err => console.log(err));
 };
 
 collection.deleteCommentById = function (req, res) {
