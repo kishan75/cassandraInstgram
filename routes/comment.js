@@ -6,4 +6,8 @@ router.post('/', function (req, res) {
     controller.comment.createComment(req, res);
 });
 
+router.get('/:postId', function (req, res) {
+    controller.comment.getAllCommentByPostId(req, res);
+});
+
 module.exports = router;

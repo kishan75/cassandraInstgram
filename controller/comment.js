@@ -50,10 +50,6 @@ collection.getAllCommentByPostId = function (req, res) {
     
 };
 
-collection.getCommentById = function (req, res) {
-
-};
-
 collection.deleteCommentById = function (req, res) {
 
 };
