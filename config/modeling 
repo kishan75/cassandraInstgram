@@ -62,3 +62,13 @@ type int,
 notificationobjectid timeuuid,
 time timestamp
 );
+
+CREATE TABLE IF NOT EXISTS reply(
+replyid timeuuid PRIMARY KEY,	
+commentid timeuuid,	
+postid timeuuid,
+userid  timeuuid,
+time timestamp,
+reply text,
+like set<timeuuid>
+);

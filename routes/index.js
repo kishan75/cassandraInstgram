@@ -4,4 +4,5 @@ var router = express.Router();
 router.use('/user', require("./users"));
 router.use('/post', require("./post"));
 router.use('/comment', require("./comment"));
+router.use('/reply', require("./reply"));
 module.exports = router;

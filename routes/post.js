@@ -28,4 +28,8 @@ router.get('/', function (req, res) {
   res.render("index.ejs", {});
 });
 
+router.get('/:userId', function (req, res) {
+  controller.post.getAllPostByUserId(req, res);
+});
+
 module.exports = router;
