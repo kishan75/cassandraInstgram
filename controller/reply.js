@@ -5,7 +5,7 @@ var collection = {};
 
 collection.addLike = function (req, res) {
     const notfid = TimeUuid.now();
-    const query1 = `UPDATE reply SET like = like + {'${req.body.fromuser}'} where replyid = ? `;
+    const query1 = `UPDATE reply SET like = like + {'${req.body.byuser}':'${notfid}'} where replyid = ? `;
     const query2 = `INSERT INTO notification (notificationid , fromuser , touser , type , time) VALUES (?,?,?,?,?)`;
     const query3 = `UPDATE user SET notifications = notifications +{'${notfid}'} where userid = ?`;
     const query4 = `INSERT INTO myactivity (activityid,byuser,ofuser,type,time) VALUES(?,?,?,?,?)`;
@@ -16,15 +16,15 @@ collection.addLike = function (req, res) {
         },
         {
             query: query2,
-            params: [notfid,req.body.userid,req.body.touser,{message:'like-reply', id: req.body.replyid},new Date()]
+            params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
         },
         {
             query:query3,
-            params: [req.body.touser]
+            params: [req.body.ofuser]
         },
         {
             query: query4,
-            params: [notfid,req.body.fromuser,req.body.touser,{message:'like-reply', id: req.body.replyid},new Date()]
+            params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
         }
     ];
     var result = client.batch(queries, { prepare: true });
@@ -37,7 +37,7 @@ collection.addLike = function (req, res) {
     });
 };
 collection.deleteLike = function (req, res) {
-    const query1 = `UPDATE reply SET like = like - {'${req.body.fromuser}'} where replyid = ? `;
+    const query1 = `UPDATE reply SET like = like - {'${req.body.byuser}'} where replyid = ? `;
     const query2 = `INSERT INTO notification (notificationid , fromuser , touser , type , time) VALUES (?,?,?,?,?)`;
     const query3 = `UPDATE user SET notifications = notifications +{'${notfid}'} where userid = ?`;
     const query4 = `INSERT INTO myactivity (activityid,byuser,ofuser,type,time) VALUES(?,?,?,?,?)`;
@@ -48,15 +48,15 @@ collection.deleteLike = function (req, res) {
         },
         {
             query: query2,
-            params: [notfid,req.body.userid,req.body.touser,{message:'like-reply', id: req.body.replyid},new Date()]
+            params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
         },
         {
             query:query3,
-            params: [req.body.touser]
+            params: [req.body.ofuser]
         },
         {
             query: query4,
-            params: [notfid,req.body.fromuser,req.body.touser,{message:'like-reply', id: req.body.replyid},new Date()]
+            params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
         }
     ];
     var result = client.batch(queries, { prepare: true });
