@@ -4,7 +4,7 @@ const TimeUuid = require('cassandra-driver').types.TimeUuid;
 var collection = {};
 
 collection.createPost = function (req, res) {
-    if (req.file == undefined) {
+    if (req.file == undefined) { 
         res.status(400).send("please select a image file");
         return;
     }
