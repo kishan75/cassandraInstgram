@@ -9,6 +9,7 @@ collection.addLike = function (req, res) {
     const query2 = `INSERT INTO notification (notificationid , fromuser , touser , type , time) VALUES (?,?,?,?,?)`;
     const query3 = `UPDATE user SET notifications = notifications +{'${notfid}'} where userid = ?`;
     const query4 = `INSERT INTO myactivity (activityid,byuser,ofuser,type,time) VALUES(?,?,?,?,?)`;
+    const query5 = `UPDATE user SET myactivity = myactivity +{'${notfid}'} where userid = ?`;
     const queries = [
         {
             query: query1,
@@ -25,6 +26,10 @@ collection.addLike = function (req, res) {
         {
             query: query4,
             params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
+        },
+        {
+            query:query5,
+            params: [req.body.ofuser]
         }
     ];
     var result = client.batch(queries, { prepare: true });
@@ -41,6 +46,8 @@ collection.deleteLike = function (req, res) {
     const query2 = `INSERT INTO notification (notificationid , fromuser , touser , type , time) VALUES (?,?,?,?,?)`;
     const query3 = `UPDATE user SET notifications = notifications +{'${notfid}'} where userid = ?`;
     const query4 = `INSERT INTO myactivity (activityid,byuser,ofuser,type,time) VALUES(?,?,?,?,?)`;
+    const query5 = `UPDATE user SET myactivity = myactivity +{'${notfid}'} where userid = ?`;
+    
     const queries = [
         {
             query: query1,
@@ -57,6 +64,10 @@ collection.deleteLike = function (req, res) {
         {
             query: query4,
             params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
+        },
+        {
+            query:query5,
+            params: [req.body.ofuser]
         }
     ];
     var result = client.batch(queries, { prepare: true });
