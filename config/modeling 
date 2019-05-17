@@ -18,6 +18,23 @@ CREATE TABLE instagramdemo.user (
     username text
 )
 
+CREATE TABLE instagramdemo.user (
+    userid timeuuid PRIMARY KEY,
+    atdeleted timestamp,
+    dob date,
+    email text,
+    firstname text,
+    lastname text,
+    phone text,
+    time timestamp,
+    username text
+);
+
+CREATE TABLE post_count (
+  userid timeuuid PRIMARY KEY,
+  post_count counter
+  );
+
 
 CREATE TABLE comment(
 commentid timeuuid PRIMARY KEY,	
@@ -30,14 +47,13 @@ like set<timeuuid>
 );
 
 CREATE TABLE instagramdemo.post (
-    postid timeuuid PRIMARY KEY,
+    postid timeuuid ,
+    userid timeuuid,
     caption text,
-    comments set<timeuuid>,
     imagepath text,
-    like set<timeuuid>,
     time timestamp,
-    userid timeuuid
-);
+PRIMARY KEY (userid,time)
+) WITH CLUSTERING ORDER BY (time ASC);
 
 
 CREATE TABLE IF NOT EXISTS myactivity(
@@ -53,7 +69,7 @@ CREATE TABLE IF NOT EXISTS message(
 messageid timeuuid,
 byuser timeuuid,
 touser timeuuid,
-type text,   // reply or send
+type text,   // reply or
 body text,
 time timestamp,
 PRIMARY KEY ((byuser,touser),time)
