@@ -4,35 +4,37 @@ const TimeUuid = require('cassandra-driver').types.TimeUuid;
 var collection = {};
 
 collection.addLike = function (req, res) {
-    const notfid = TimeUuid.now();
-    const query1 = `UPDATE reply SET like = like + {'${req.body.byuser}':'${notfid}'} where replyid = ? `;
-    const query2 = `INSERT INTO notification (notificationid , fromuser , touser , type , time) VALUES (?,?,?,?,?)`;
-    const query3 = `UPDATE user SET notifications = notifications +{'${notfid}'} where userid = ?`;
-    const query4 = `INSERT INTO myactivity (activityid,byuser,ofuser,type,time) VALUES(?,?,?,?,?)`;
-    const query5 = `UPDATE user SET myactivity = myactivity +{'${notfid}'} where userid = ?`;
+    /* req{
+        type: 5 
+        postid : postid
+        commentid : commentid
+        replyid : timeuuid
+        byuser : liker timeuuid
+        ofuser : author timeuuid
+     }
+    */
+    const likeid = TimeUuid.now();
     const queries = [
         {
-            query: query1,
-            params: [req.body.replyid]
+            query: `INSERT INTO like(type,typeid,byuser,likeid) 
+                    VALUES(${req.body.type},${req.body.typeid},${req.body.byuser},${likeid})`
         },
-        {
-            query: query2,
-            params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
+        {   
+            query: `UPDATE reply SET likescount = likescount + 1 
+                    WHERE postid = ${req.body.postid} AND 
+                          commentid = ${req.body.commentid} AND 
+                          replyid  = ${req.body.replyid}`
         },
-        {
-            query:query3,
-            params: [req.body.ofuser]
+        {   
+            query: `INSERT INTO myactivity(user,type,id,typeid,ofuser) 
+                    VALUES(${req.body.byuser},${type},${likeid},${req.body.replyid},${req.body.ofuser})`
         },
-        {
-            query: query4,
-            params: [notfid,req.body.byuser,req.body.ofuser,{message:'like-reply', id: req.body.replyid},new Date()]
-        },
-        {
-            query:query5,
-            params: [req.body.ofuser]
+        {            
+            query: `INSERT INTO notification(user,type,id,typeid,ofuser) 
+                    VALUES(${req.body.ofuser},${type},${likeid},${req.body.postid},${req.body.byuser})`
         }
     ];
-    var result = client.batch(queries, { prepare: true });
+    var result = client.batch(queries);
     result.then(result => {
         console.log(result);
         
