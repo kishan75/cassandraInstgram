@@ -1,12 +1,18 @@
 var express = require('express');
+var app = express();
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var expressSession = require("express-session");
+app.use(expressSession({
+    secret: 'keyboard cat',
+    saveUninitialized: true,
+    resave: true
+}));
 var bodyParser = require('body-parser');
-
+var session = require('express-session');
 var routes = require('./routes/index');
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

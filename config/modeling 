@@ -8,7 +8,7 @@ CREATE TABLE instagramdemo.user (
     followers set<timeuuid>,
     following set<timeuuid>,
     lastname text,
-    messages map<timeuuid, frozen<list<timeuuid>>>,
+    messages map<timeuuid,time>,
     myactivity set<timeuuid>,
     notifications set<timeuuid>,
     phone text,
@@ -49,6 +49,18 @@ activityobjectid timeuuid,
 time timestamp
 );
 
+CREATE TABLE IF NOT EXISTS message(
+messageid timeuuid,
+byuser timeuuid,
+touser timeuuid,
+type text,   // reply or send
+body text,
+time timestamp,
+PRIMARY KEY ((byuser,touser),time)
+) WITH CLUSTERING ORDER BY (time ASC);
+
+
+
 CREATE TABLE IF NOT EXISTS notificationtype(
 message text PRIMARY KEY,
 id int
@@ -63,6 +75,12 @@ notificationobjectid timeuuid,
 time timestamp
 );
 
+CREATE TABLE test ( from text,
+to text, 
+id timeuuid ,
+PRIMARY KEY((from,to),id) 
+);
+
 CREATE TABLE IF NOT EXISTS reply(
 replyid timeuuid PRIMARY KEY,	
 commentid timeuuid,	
@@ -72,3 +90,43 @@ time timestamp,
 reply text,
 like set<timeuuid>
 );
+
+
+export const UserFeed = models.loadSchema('UserFeed', {
+    fields: {
+        fight_id: { type: 'uuid' },
+        match_id: { type: 'uuid' },
+        match_scheduled_date: { type: "date" }, // date
+        user_id: { type: 'uuid' }, // nullable models.datatypes.unset
+        type: 'varchar',
+        priority: 'int',
+        side_a_id: { type: 'uuid' },
+        side_b_id: { type: 'uuid' },
+        created: {
+            type: "timestamp",
+            default: { "$db_function": "toTimestamp(now())" }
+        }
+    },
+    key: ["fight_id"]
+})
+
+
+
+
+
+create table matchdetails (
+matchid uuid,
+matchscheduleddate timestamp,
+created timestamp,
+PRIMARY KEY (matchscheduleddate)
+)
+WITH CLUSTERING ORDER BY (matchscheduleddate ASC);
+
+export const MatchDetails = models.loadSchema('MatchDetails', {
+fields: {
+match_id: { type: 'varchar' },
+match_scheduled_date: { type: "timestamp" }, // date
+created: { type: "timestamp" }
+},
+key: ["match_scheduled_date"]
+})
