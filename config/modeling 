@@ -7,8 +7,9 @@ CREATE TABLE instagramdemo.user (
     lastname text,
     phone text,
     time timestamp,
+    isprivate Boolean,
     username text
-);
+)
 
 CREATE TABLE post_count (
   userid timeuuid PRIMARY KEY,
@@ -51,7 +52,14 @@ PRIMARY KEY (userid,time)
 
 CREATE TABLE instagramdemo.following (
     userid timeuuid,
-    followingid timeuuid,
+    targetuserid timeuuid,
+    time timestamp,
+PRIMARY KEY (userid,time)
+) WITH CLUSTERING ORDER BY (time ASC);
+
+CREATE TABLE instagramdemo.followrequest (
+    userid timeuuid,
+    requestuserid timeuuid,
     time timestamp,
 PRIMARY KEY (userid,time)
 ) WITH CLUSTERING ORDER BY (time ASC);

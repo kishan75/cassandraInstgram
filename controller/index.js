@@ -5,5 +5,6 @@ module.exports = {
     reply: require("./reply"),
     message: require("./message"),
     followers: require("./followers"),
-    following: require("./following")
+    following: require("./following"),
+    followRequest:require("./followRequest")
 };

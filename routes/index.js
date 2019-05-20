@@ -8,4 +8,5 @@ router.use('/reply', require("./reply"));
 router.use('/message',require("./message"));
 router.use('/followers',require("./followers"));
 router.use('/following',require("./following"));
+router.use('/followrequest',require("./followRequest"));
 module.exports = router;
