@@ -7,11 +7,8 @@ collection.createComment = function (req, res) {
     req.body.commentid = TimeUuid.now();
     req.body.time = new Date();
     const query1 = "INSERT INTO comment (commentid,comment,postid,time,userid) VALUES (?,?,?,?,?)";
-    const query2 = "UPDATE post SET comments = comments + {" + req.body.commentid + "} WHERE postid=?";
-    const query3 = "INSERT INTO myactivity (activityid , activityobjectid , activitytype , byuser , ofuser , time ) VALUES (?,?,?,?,?,?)";
-    const query4 = "INSERT INTO notification (notificationid,fromuser,touser,type,notificationobjectid,time) VALUES (?,?,?,?,?,?)";
-    const query5 = "UPDATE user SET myactivity = myactivity + {" + req.body.commentid + "} WHERE userid=?";
-    const query6 = "UPDATE user SET notifications = notifications + {" + req.body.commentid + "} WHERE userid=?";
+    const query2 = "INSERT INTO myactivity (activityid , activityobjectid , activitytype , byuser , ofuser , time ) VALUES (?,?,?,?,?,?)";
+    const query3 = "INSERT INTO notification (notificationid,byuser,ofuser,type,notificationobjectid,time) VALUES (?,?,?,?,?,?)";
     var queries = [
         {
             query: query1,
@@ -19,42 +16,32 @@ collection.createComment = function (req, res) {
         },
         {
             query: query2,
-            params: req.body
-        },
-        {
-            query: query3,
             params: [req.body.commentid, req.body.postid, 2, req.body.userid, req.body.ofuserid, req.body.time]
         },
         {
-            query: query4,
+            query: query3,
             params: [req.body.commentid, req.body.userid, req.body.ofuserid, 2, req.body.postid, req.body.time]
-        },
-        {
-            query: query5,
-            params: req.body
-        },
-        {
-            query: query6,
-            params: [req.body.ofuserid]
         }
     ];
-
     var result = client.batch(queries, { prepare: true });
     result.then(result => {
-        console.log(result);
-        res.send(result);
+        const query4 = "UPDATE comment_count SET comment_count = comment_count + 1 where postid = ? ";
+        result = client.execute(query4, req.body, { prepare: true });
+        result.then(result => res.send(result), err => console.log(err));
     }, err => console.log(err));
 };
 
 collection.getAllCommentByPostId = function (req, res) {
-    const query1 = "SELECT comments FROM post WHERE postid=?";
-    var result = client.execute(query1, [req.params.postId], { prepare: true });
-
-    result.then(result => {
-        const query2 = "SELECT * FROM comment WHERE commentid IN ?";
-        result = client.execute(query2, [result.rows[0].comments], { prepare: true });
-        result.then(result => res.send(result.rows), err => console.log(err));
-    }, err => console.log(err));
+    var result;
+    if (req.params.time) {
+        const query1 = "SELECT * FROM comment WHERE postid=? AND time < ? LIMIT 10";
+        result = client.execute(query1, req.params, { prepare: true });
+    }
+    else {
+        const query2 = "SELECT * FROM comment WHERE postid=? LIMIT 10";
+        result = client.execute(query2, req.params, { prepare: true });
+    }
+    result.then(result => res.send(result.rows), err => console.log(err));
 };
 
 collection.deleteCommentById = function (req, res) {

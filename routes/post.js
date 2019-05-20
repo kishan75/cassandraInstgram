@@ -24,6 +24,7 @@ var controller = require("../controller/index");
 router.post("/", upload.single("imagepath"), function (req, res) {
   controller.post.createPost(req, res);
 });
+
 router.get('/', function (req, res) {
   res.render("index.ejs", {});
 });
@@ -31,5 +32,10 @@ router.get('/', function (req, res) {
 router.get('/:userId', function (req, res) {
   controller.post.getAllPostByUserId(req, res);
 });
+
+router.get('/:userId/:time', function (req, res) {
+  controller.post.getAllPostByUserId(req, res);
+});
+
 
 module.exports = router;

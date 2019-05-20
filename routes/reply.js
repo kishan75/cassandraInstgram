@@ -10,4 +10,8 @@ router.get("/:commentId", function (req, res) {
     controller.reply.getAllReplyByCommentId(req, res);
 });
 
+router.get("/:commentId/:time", function (req, res) {
+    controller.reply.getAllReplyByCommentId(req, res);
+});
+
 module.exports = router;

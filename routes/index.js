@@ -6,4 +6,6 @@ router.use('/post', require("./post"));
 router.use('/comment', require("./comment"));
 router.use('/reply', require("./reply"));
 router.use('/message',require("./message"));
+router.use('/followers',require("./followers"));
+router.use('/following',require("./following"));
 module.exports = router;

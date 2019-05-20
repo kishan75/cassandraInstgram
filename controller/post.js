@@ -12,35 +12,25 @@ collection.createPost = function (req, res) {
     req.body.imagepath = '/' + req.file.path;
     req.body.time = new Date();
     const query1 = "INSERT INTO post (postid , userid , imagepath , time , caption) VALUES (?,?,?,?,?)";
-    const query2 = "UPDATE user SET post = post + {" + req.body.postid + " } where userid = ? ";
-    const queries = [
-        {
-            query: query1,
-            params: req.body
-        },
-        {
-            query: query2,
-            params: [req.body.userid]
-        }
-    ];
-    var result = client.batch(queries, { prepare: true });
+    var result = client.execute(query1, req.body, { prepare: true });
     result.then(result => {
-        console.log(result);
-        res.send("posted");
-    }, err => {
-        console.log(err);
-    });
+        const query2 = "UPDATE post_count SET post_count = post_count + 1 where userid = ? ";
+        var result = client.execute(query2, [req.body.userid], { prepare: true });
+        result.then(result => res.send("done"), err => console.log(err));
+    }, err => console.log(err));
 };
 
 collection.getAllPostByUserId = function (req, res) {
-    const query1 = "SELECT post FROM user WHERE userid=?";
-    var result = client.execute(query1, [req.params.userId], { prepare: true });
-    result.then(result => {
-        console.log(result.rows[0].post);
-        const query2 = "SELECT * FROM post WHERE postid IN ?";
-        result = client.execute(query2, [result.rows[0].post], { prepare: true });
-        result.then(result => res.send(result.rows), err => console.log(err));
-    }, err => console.log(err));
+    var result;
+    if (req.params.time) {
+        const query1 = "SELECT * FROM post WHERE userid = ? and time < ? LIMIT 10";
+        result = client.execute(query1, [req.params.userId, req.params.time], { prepare: true });
+    }
+    else {
+        const query2 = "SELECT * FROM post WHERE userid = ? LIMIT 10";
+        result = client.execute(query2, [req.params.userId], { prepare: true });
+    }
+    result.then(result => res.send(result.rows), err => console.log(err));
 };
 
 module.exports = collection;

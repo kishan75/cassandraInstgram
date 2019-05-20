@@ -3,5 +3,7 @@ module.exports = {
     post: require("./post"),
     comment: require("./comment"),
     reply: require("./reply"),
-    message: require("./message")
+    message: require("./message"),
+    followers: require("./followers"),
+    following: require("./following")
 };
