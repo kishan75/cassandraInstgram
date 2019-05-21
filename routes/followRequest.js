@@ -6,7 +6,7 @@ router.get('/:userId', function (req, res) {
     controller.followRequest.getFollowRequest(req, res);
 });
 
-router.get('/:userId/:response', function (req, res) {
+router.get('/:userId/:requestUserTime/:response', function (req, res) {
     controller.followRequest.responseFollowRequst(req, res);
 });
 

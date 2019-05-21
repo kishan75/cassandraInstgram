@@ -29,7 +29,14 @@ collection.getFollowRequest = function (req, res) {
 };
 
 collection.responseFollowRequst = function (req, res) {
-  
- };
+  if (req.params.response) {
+
+  }
+  else {
+    const query = "DELETE from followrequest WHERE userid = ? AND time =?";
+    var result = client.execute(query, [req.params.userId, req.params.requestUserTime], { prepare: true });
+    result.then(result => res.send(result), err => console.log(err));
+  }
+};
 
 module.exports = collection;
